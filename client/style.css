@@ -1,0 +1,33 @@
+.row {
+    margin-top: 20px;
+    width: 95%;
+    margin-left: 50px;
+    overflow-x: hidden;
+}
+
+#msgBox {
+    display: none;
+}
+
+.table {
+    width: 100%;
+}
+
+.btn_margin {
+    margin-top: 25px;
+}
+
+#btnUpdate:hover {
+    background: rgb(120, 170, 71);
+    color: white;
+}
+
+#btnCancel:hover {
+    background: rgba(196, 81, 66, 0.808);
+    color: white;
+}
+
+
+.btn-light, .btn-light:hover, .btn-light:focus {
+    border: 1px solid black;
+}
