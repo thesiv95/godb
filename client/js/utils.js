@@ -9,20 +9,18 @@ const israeliDateToJSFormat = (date) => {
 const age = (date) => {
     let d = new Date();
     // day, month, year
-    let currentDate = [d.getDate(), d.getMonth(), d.getFullYear()];
+    let currentDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()];
     date = date.split('/');
     // day, month, year
     let userDate = [parseInt(date[0]), parseInt(date[1]), parseInt(date[2])];
     let userAge = currentDate[2] - userDate[2];
 
-    // We need to define - did user have his birthday or not (check day & month)
-    let birthdayPassed = false;
-
-    if (userDate[0] >= currentDate[0] && userDate[1] >= currentDate[1]){
-        birthdayPassed = true;
+    // firstly check month, then day - if user already had his birthday
+    if (userDate[1] < currentDate[1] && userDate[0] < currentDate[0]){
+        userAge -= 1; // if birthday was not yet, age is less by 1!
     }
 
-    return birthdayPassed ? userAge : userAge - 1; 
+    return userAge; 
 }
 
 const message = (text, type = '', showDelay = 3000) => {
