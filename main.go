@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -18,18 +19,7 @@ type User struct {
 }
 
 var users []User
-
-func getUsers(w http.ResponseWriter, r *http.Request) {
-}
-
-func addUser(w http.ResponseWriter, r *http.Request) {
-}
-
-func editUser(w http.ResponseWriter, r *http.Request) {
-}
-
-func deleteUser(w http.ResponseWriter, r *http.Request) {
-}
+var db *sql.DB
 
 func init() {
 	gotenv.Load()
@@ -46,7 +36,11 @@ func main() {
 	pgUrl, err := pq.ParseURL(os.Getenv("ELEPHANTSQL_URL"))
 	logFatal(err)
 
-	log.Println(pgUrl)
+	db, err = sql.Open("postgres", pgUrl)
+	logFatal(err)
+
+	err = db.Ping() // output only when error occurs
+	logFatal(err)
 
 	router := mux.NewRouter()
 
@@ -55,4 +49,16 @@ func main() {
 	router.HandleFunc("/users/{id}", editUser).Methods("PUT")
 	router.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
+}
+
+func getUsers(w http.ResponseWriter, r *http.Request) {
+}
+
+func addUser(w http.ResponseWriter, r *http.Request) {
+}
+
+func editUser(w http.ResponseWriter, r *http.Request) {
+}
+
+func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
