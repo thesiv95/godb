@@ -1,12 +1,12 @@
 const doc = document;
+const baseUrl = 'http://localhost:8000';
+
 const btnAdd = doc.getElementById('btnAdd');
 const btnUpdate = doc.getElementById('btnUpdate');
 const btnCancel = doc.getElementById('btnCancel');
 
 btnAdd.addEventListener('click', addItem);
 btnUpdate.addEventListener('click', updateItem);
-btnCancel.addEventListener('click', finishUpdating);
+btnCancel.addEventListener('click', resetUI);
 
-fetch('http://localhost:8000/users', {
-    method: 'GET'
-}).then(r => r.json()).then(data => console.log(data));
+doc.addEventListener('DOMContentLoaded', refreshTable);

@@ -1,3 +1,40 @@
+const refreshTable = async () => { // this function gets all actual values from DB
+    
+    let tBody = doc.getElementById('table-body');
+
+    let response = await fetch(`${baseUrl}/users`, {
+        method: 'GET'
+    });
+
+    if (!response.ok){
+        message(`Connection error, code ${response.status}, ask sysadmin...`, 'error', 15000);
+        return;
+    }
+
+    let users = await response.json();
+   
+    let tRows = users.map(user => {
+        return `
+            <tr>
+                <th scope="row">${user.UserId}</th>
+                <td>${user.Name}</td>
+                <td>${user.Lastname}</td>
+                <td>${countUserAge(user.Birthdate)}</td>
+                <td>${user.Birthdate}</td>
+                <td>
+                    <button class="btn btn-warning" id="user-${user.UserId}" onclick="editItem(${user.UserId})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteItem(${user.UserId})">Delete</button>
+                </td>
+            </tr>
+    `
+    })
+
+    tRows = tRows.join('');
+
+    tBody.innerHTML = ''; // reset previous html markup
+    tBody.innerHTML = tRows;
+}
+
 const dateToIsraeliFormat = (date) => { // date - default formatted in JS
     return date.split('-').reverse().join('/');
 }
@@ -6,7 +43,8 @@ const israeliDateToJSFormat = (date) => {
     return date.split('/').reverse().join('-');
 }
 
-const age = (date) => {
+const countUserAge = (date) => {
+    // may not work properly due to async
     let d = new Date();
     // day, month, year
     let currentDate = [d.getDate(), d.getMonth() + 1, d.getFullYear()];
@@ -19,6 +57,7 @@ const age = (date) => {
     if (userDate[1] < currentDate[1] && userDate[0] < currentDate[0]){
         userAge -= 1; // if birthday was not yet, age is less by 1!
     }
+    
 
     return userAge; 
 }
@@ -56,7 +95,7 @@ const serialize = () => {
         return false;
     }
     
-    let data = {"firstname": firstName, "lastname": lastName, "birthdate": birthDate};
+    let data = {"name": firstName, "lastname": lastName, "birthdate": birthDate};
     data = JSON.stringify(data);
     return data;
 }
