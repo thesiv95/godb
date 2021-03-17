@@ -52,13 +52,15 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	i, _ := strconv.Atoi(params["id"])
+	id, _ := strconv.Atoi(params["id"])
 
-	for _, user := range users {
-		if user.UserId == i {
-			fmt.Printf("delete %d", i)
+	for i, item := range users {
+		if item.UserId == id {
+			users = append(users[:i], users[i+1:]...)
 		}
 	}
+
+	json.NewEncoder(w).Encode(users)
 }
 
 func main() {
