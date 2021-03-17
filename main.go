@@ -26,22 +26,27 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 func addUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("add user")
 	var user User
-	json.NewDecoder(r.Body).Decode(&user)
+	_ = json.NewDecoder(r.Body).Decode(&user)
 	users = append(users, user)
 
 	json.NewEncoder(w).Encode(users)
 }
 
 func editUser(w http.ResponseWriter, r *http.Request) {
+	var user User
 	params := mux.Vars(r)
 
-	i, _ := strconv.Atoi(params["id"]) // var i
+	id, _ := strconv.Atoi(params["id"]) // var i
 
-	for _, user := range users {
-		if user.UserId == i {
-			fmt.Printf("edit %d", i)
+	_ = json.NewDecoder(r.Body).Decode(&user)
+
+	for i, item := range users {
+		if item.UserId == id {
+			users[i] = user
 		}
 	}
+
+	json.NewEncoder(w).Encode(users)
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
