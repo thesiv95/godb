@@ -7,7 +7,7 @@ const refreshTable = async () => { // this function gets all actual values from 
     });
 
     if (!response.ok){
-        message(`Connection error, code ${response.status}, ask sysadmin...`, 'error', 15000);
+        message(`Connection error, ask sysadmin...`, 'error', 15000);
         return;
     }
 
