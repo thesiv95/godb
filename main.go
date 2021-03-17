@@ -23,8 +23,13 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func acceptUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("acceptUsers json")
+func addUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("add user")
+	var user User
+	json.NewDecoder(r.Body).Decode(&user)
+	users = append(users, user)
+
+	json.NewEncoder(w).Encode(users)
 }
 
 func editUser(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +65,7 @@ func main() {
 		User{UserId: 4, Name: "Nor", Lastname: "Levinov", Birthdate: "11/12/2000"},
 		User{UserId: 5, Name: "Tal", Lastname: "Manov", Birthdate: "03/09/1991"})
 	router.HandleFunc("/users", getUsers).Methods("GET")
-	router.HandleFunc("/users", acceptUsers).Methods("POST")
+	router.HandleFunc("/users", addUser).Methods("POST")
 	router.HandleFunc("/users/{id}", editUser).Methods("PUT")
 	router.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
