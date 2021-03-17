@@ -1,13 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/lib/pq"
+	"github.com/subosito/gotenv"
 )
 
 type User struct {
@@ -20,57 +20,36 @@ type User struct {
 var users []User
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(users)
 }
 
 func addUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("add user")
-	var user User
-	_ = json.NewDecoder(r.Body).Decode(&user)
-	users = append(users, user)
-
-	json.NewEncoder(w).Encode(users)
 }
 
 func editUser(w http.ResponseWriter, r *http.Request) {
-	var user User
-	params := mux.Vars(r)
-
-	id, _ := strconv.Atoi(params["id"]) // var i
-
-	_ = json.NewDecoder(r.Body).Decode(&user)
-
-	for i, item := range users {
-		if item.UserId == id {
-			users[i] = user
-		}
-	}
-
-	json.NewEncoder(w).Encode(users)
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+}
 
-	id, _ := strconv.Atoi(params["id"])
+func init() {
+	gotenv.Load()
+}
 
-	for i, item := range users {
-		if item.UserId == id {
-			users = append(users[:i], users[i+1:]...)
-		}
+func logFatal(err error) {
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	json.NewEncoder(w).Encode(users)
 }
 
 func main() {
+
+	pgUrl, err := pq.ParseURL(os.Getenv("ELEPHANTSQL_URL"))
+	logFatal(err)
+
+	log.Println(pgUrl)
+
 	router := mux.NewRouter()
-	users = append(users,
-		User{UserId: 1, Name: "John", Lastname: "Smith", Birthdate: "11/03/1986"},
-		User{UserId: 2, Name: "Moshe", Lastname: "Dayan", Birthdate: "10/02/1993"},
-		User{UserId: 3, Name: "Sarah", Lastname: "Connor", Birthdate: "05/11/1997"},
-		User{UserId: 4, Name: "Nor", Lastname: "Levinov", Birthdate: "11/12/2000"},
-		User{UserId: 5, Name: "Tal", Lastname: "Manov", Birthdate: "03/09/1991"})
+
 	router.HandleFunc("/users", getUsers).Methods("GET")
 	router.HandleFunc("/users", addUser).Methods("POST")
 	router.HandleFunc("/users/{id}", editUser).Methods("PUT")

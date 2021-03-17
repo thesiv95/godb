@@ -28,4 +28,5 @@
 task.txt
 bin/
 src/
+.env
 .vscode/
