@@ -21,3 +21,6 @@ However, you can set your own DB configuration and create table **users**:
 ```
 create table users(userid serial, name varchar, lastname varchar, birthdate varchar)
 ```
+
+# Testing
+`go test`
